@@ -74,34 +74,33 @@ public class AdminController {
         return "redirect:/admin/productInventory";
     }
 
-    @RequestMapping("/admin/productInventory/editProduct/{id}")
-    public String editProduct(@PathVariable("id") String id, Model model) {
-        Product product = productDao.getProductById(id);
-        System.out.println(product.getProductName());
-
-        model.addAttribute(product);
-
-        return "editProduct";
+    @RequestMapping(value = "/editProduct/{id}")
+    public ModelAndView editProduct(@PathVariable("id") String id, Model model) {
+        List<Category> categories=categoryDao.getCategoryList();
+        model.addAttribute("product",productDao.getProductById(id));
+        model.addAttribute("categories",categories);
+        return new ModelAndView("editProduct");
     }
 
-    @RequestMapping(value = "/admin/productInventory/editProduct", method = RequestMethod.POST)
-    public String editProduct(@ModelAttribute("product") Product product, Model model, HttpServletRequest
-            request) {
-
-        MultipartFile productImage = product.getProductImage();
+    @RequestMapping(value = "/editProduct", method = RequestMethod.POST)
+    public RedirectView editProduct(@ModelAttribute("product") Product product, Model model, HttpServletRequest
+            request ) {
+        MultipartFile productImage = product.getImage();
         String rootDirectory = request.getSession().getServletContext().getRealPath("/");
-        path = Paths.get(rootDirectory + "\\WEB-INF\\resources\\images\\"+product.getProductId()+".png");
-
+        path = Paths.get(rootDirectory + "\\WEB-INF\\resources\\Uploads\\"+product.getId()+".png");
         if (productImage != null && !productImage.isEmpty()) {
             try {
-                productImage.transferTo(new File(path.toString()));
+                File file = new File(path.toString());
+                if(file.delete())
+                    productImage.transferTo(new File(path.toString()));
             } catch (Exception e) {
                 throw new RuntimeException("Product image saving failed" , e);
             }
         }
-
+        product.setCategory( categoryDao.getCategoryById(product.getCategory().getId()));
         productDao.editProduct(product);
-
-        return "redirect:/admin/productInventory";
+        RedirectView redirectView = new RedirectView();
+        redirectView.setUrl("/admin");
+        return redirectView;
     }
 }

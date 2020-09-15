@@ -5,13 +5,13 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String productId;
 
     private String productName;
-    private String productCategory;
     private String productDescription;
     private double productPrice;
     private String productCondition;
@@ -35,14 +35,6 @@ public class Product {
 
     public void setProductName(String productName) {
         this.productName = productName;
-    }
-
-    public String getProductCategory() {
-        return productCategory;
-    }
-
-    public void setProductCategory(String productCategory) {
-        this.productCategory = productCategory;
     }
 
     public String getProductDescription() {
@@ -90,6 +82,16 @@ public class Product {
 
     public void setProductImage(MultipartFile productImage) {
         this.productImage = productImage;
+    }
+
+    @ManyToOne (optional=false, cascade=CascadeType.ALL)
+    private Category Category;
+
+    public void setCategory(Category category) {
+        Category = category;
+    }
+    public Category getCategory() {
+        return Category;
     }
 
 }

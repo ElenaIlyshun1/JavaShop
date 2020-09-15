@@ -2530,9 +2530,9 @@
 
 .form-2 .log-twitter {
     margin-right: 1%;
-    background: linear-gradient(#f9f8fa, #ffffff);
-    border: 1px solid #f9f8fa;
-    color: #2c2c2c;
+    background: linear-gradient(#f55959, #d33b33);
+    border: 1px solid #d33b33;
+    color: #f9f8fa;
     text-shadow: 0 -1px rgba(0,0,0,0.3);
     text-decoration: none;
 }
